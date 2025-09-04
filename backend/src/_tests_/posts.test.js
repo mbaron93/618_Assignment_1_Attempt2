@@ -4,8 +4,33 @@ import { createPost, getPostById, listAllPosts, listPostsByAuthor, listPostsByTa
 import { Post } from '../db/models/post.js'
 
 //Add in example posts
+const samplePosts = [
+    {
+        title: 'First Post',
+        author: 'Alice',
+        contents: 'This is the first post.',
+        tags: ['intro', 'welcome']
+    },
+    {
+        title: 'Second Post',
+        author: 'Bob',
+        contents: 'This is the second post.',
+        tags: ['update']
+    }
+];
 
-//create a before each function that adds in all posts from the sample posts
+let createdSamplePosts = [];
+
+beforeEach(async () => {
+    await Post.deleteMany({});
+    createdSamplePosts = [];
+    for (const post of samplePosts) {
+        const created = await createPost(post);
+        // Fetch the full post from DB to get all fields (including timestamps)
+        const fullPost = await Post.findById(created._id);
+        createdSamplePosts.push(fullPost);
+    }
+});
 
 //create a test that lists all posts and verifies they are uploaded
 
